@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lyz | ♠</title>
+  <style>
+    :root {
+      --bg: #0b0710;
+      --card-bg: #150d1e;
+      --card-border: #2a1b3d;
+      --magenta: #ff2a85;
+      --magenta-glow: rgba(255, 42, 133, 0.45);
+      --purple-accent: #9d4edd;
+      --text: #f5f3f7;
+      --text-muted: #a39bb0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(157, 78, 221, 0.15), transparent 60%),
+        radial-gradient(circle at 80% 90%, rgba(255, 42, 133, 0.08), transparent 50%);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 50px 20px 40px;
+    }
+
+    .profile {
+      text-align: center;
+      margin-bottom: 35px;
+      position: relative;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+
+    .avatar-wrapper::after {
+      content: "";
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--magenta), var(--purple-accent));
+      z-index: 1;
+      box-shadow: 0 0 20px var(--magenta-glow);
+    }
+
+    .profile img {
+      position: relative;
+      width: 105px;
+      height: 105px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      z-index: 2;
+      background: var(--card-bg);
+      border: 3px solid var(--bg);
+    }
+
+    .profile h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .profile h1 span.suit {
+      color: var(--magenta);
+      font-size: 1.2rem;
+      text-shadow: 0 0 10px var(--magenta-glow);
+    }
+
+    .profile .quote {
+      margin-top: 8px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-style: italic;
+      max-width: 320px;
+      line-height: 1.4;
+    }
+
+    .links-container {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Cartas de Baralho Estilizadas */
+    .card-link {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.98rem;
+      font-weight: 600;
+      transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+      overflow: hidden;
+    }
+
+    .card-link::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 42, 133, 0.15), transparent);
+      transition: 0.5s;
+    }
+
+    .card-link:hover::before {
+      left: 100%;
+    }
+
+    .card-link:hover {
+      transform: translateY(-3px) scale(1.01) rotate(-0.5deg);
+      border-color: var(--magenta);
+      box-shadow: 0 8px 25px var(--magenta-glow);
+    }
+
+    .card-link .card-corner {
+      font-size: 0.8rem;
+      color: var(--magenta);
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+
+    .card-link:hover .card-corner {
+      opacity: 1;
+      text-shadow: 0 0 8px var(--magenta);
+    }
+
+    .card-link.destaque {
+      background: linear-gradient(135deg, #241235, #190a26);
+      border: 1px solid rgba(255, 42, 133, 0.5);
+      box-shadow: 0 4px 15px rgba(255, 42, 133, 0.2);
+    }
+
+    .footer {
+      margin-top: auto;
+      padding-top: 40px;
+      font-size: 0.8rem;
+      color: #5d536b;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="profile">
+    <div class="avatar-wrapper">
+      <!-- Imagem de avatar padrão, pode trocar o link depois pelo seu -->
+      <img src="https://github.com/identicons/gambit.png" alt="Avatar Lyz" id="user-avatar" />
+    </div>
+    <h1>Lyz <span class="suit">♦</span></h1>
+    <p class="quote">"Não há flores que prosperam em um jardim sem sol"</p>
+  </div>
+
+  <div class="links-container">
+    <!-- Roblox -->
+    <a href="https://www.roblox.com/pt/users/1766709036/profile" target="_blank" class="card-link destaque">
+      <span>🎮 Roblox Profile</span>
+      <span class="card-corner">♠ A</span>
+    </a>
+
+    <!-- Discord -->
+    <a href="https://discord.com/users/luiszzz_z0" target="_blank" class="card-link">
+      <span>💬 Discord (luiszzz_z0)</span>
+      <span class="card-corner">♥ K</span>
+    </a>
+
+    <!-- Email -->
+    <a href="mailto:lyz@lyz.wiki.br" class="card-link">
+      <span>✉️ Contato por E-mail</span>
+      <span class="card-corner">♦ Q</span>
+    </a>
+  </div>
+
+  <div class="footer">
+    LYZ.WIKI.BR ♠ 2026
+  </div>
+
+</body>
+</html>
