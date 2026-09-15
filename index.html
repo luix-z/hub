@@ -15,6 +15,7 @@
       --text: #f5f3f7;
       --text-muted: #a39bb0;
       --gold: #ffd166;
+      --xp-color: #00f0ff;
     }
 
     * {
@@ -104,7 +105,6 @@
       gap: 14px;
     }
 
-    /* Links Estilo Cartas */
     .card-link {
       position: relative;
       display: flex;
@@ -144,225 +144,176 @@
       box-shadow: 0 8px 25px var(--magenta-glow);
     }
 
-    .card-link .card-corner {
-      font-size: 0.85rem;
-      color: var(--magenta);
-      opacity: 0.7;
-      transition: opacity 0.2s;
-    }
-
-    .card-link:hover .card-corner {
-      opacity: 1;
-      text-shadow: 0 0 8px var(--magenta);
-    }
-
     .card-link.game-btn {
       background: linear-gradient(135deg, #2b1138, #180924);
       border: 1px solid rgba(255, 42, 133, 0.6);
       box-shadow: 0 4px 15px rgba(255, 42, 133, 0.25);
     }
 
-    /* Modal do Minigame */
+    .card-corner {
+      font-size: 0.85rem;
+      color: var(--magenta);
+      opacity: 0.7;
+    }
+
+    /* Modal do Jogo */
     .game-modal {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(8, 4, 14, 0.85);
-      backdrop-filter: blur(8px);
+      background: rgba(5, 2, 8, 0.92);
+      backdrop-filter: blur(10px);
       z-index: 100;
       justify-content: center;
       align-items: center;
-      padding: 16px;
+      padding: 12px;
     }
 
     .game-modal.active {
       display: flex;
     }
 
-    .game-board {
-      background: #130a1c;
+    .game-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      background: #0f0717;
       border: 2px solid var(--magenta);
       box-shadow: 0 0 35px var(--magenta-glow);
-      border-radius: 20px;
-      width: 100%;
-      max-width: 440px;
-      padding: 24px;
+      border-radius: 18px;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      position: relative;
     }
 
-    .modal-header {
+    .game-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 10px 16px;
+      background: #180d24;
       border-bottom: 1px solid var(--card-border);
-      padding-bottom: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
     }
 
-    .modal-header h2 {
-      font-size: 1.25rem;
-      color: var(--magenta);
+    .game-header .stats {
       display: flex;
-      align-items: center;
-      gap: 6px;
-      text-shadow: 0 0 10px var(--magenta-glow);
+      gap: 12px;
     }
 
     .close-btn {
       background: transparent;
       border: none;
       color: var(--text-muted);
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       cursor: pointer;
       line-height: 1;
-      transition: color 0.2s;
     }
 
-    .close-btn:hover {
-      color: #ffffff;
+    .close-btn:hover { color: #fff; }
+
+    /* Barra de XP */
+    .xp-bar-container {
+      width: 100%;
+      height: 8px;
+      background: #1c0e2d;
     }
 
-    .stats-bar {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.88rem;
-      font-weight: 600;
-      background: #1b1026;
-      padding: 8px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--card-border);
+    .xp-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00f0ff, var(--magenta));
+      transition: width 0.15s ease;
     }
 
-    .stats-bar .chips {
-      color: var(--gold);
+    #gameCanvas {
+      display: block;
+      width: 100%;
+      height: 420px;
+      background: #08030d;
+      cursor: crosshair;
     }
 
-    /* Áreas de Cartas */
-    .area-label {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 6px;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .cards-row {
-      display: flex;
-      gap: 8px;
-      min-height: 75px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    /* Carta Visual */
-    .play-card {
-      width: 50px;
-      height: 72px;
-      background: #ffffff;
-      color: #111111;
-      border-radius: 8px;
-      display: flex;
+    /* Overlay de Upgrade / Game Over */
+    .game-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 4, 16, 0.92);
       flex-direction: column;
-      justify-content: space-between;
-      padding: 4px 6px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-      user-select: none;
-      animation: popIn 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-    }
-
-    .play-card.red {
-      color: #e63946;
-    }
-
-    .play-card.hidden {
-      background: linear-gradient(135deg, #3d144c, #1f0b2a);
-      border: 1px solid var(--magenta);
-      color: var(--magenta);
-      display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
-      box-shadow: 0 0 10px rgba(255, 42, 133, 0.3);
-    }
-
-    @keyframes popIn {
-      from { transform: scale(0.6) translateY(10px); opacity: 0; }
-      to { transform: scale(1) translateY(0); opacity: 1; }
-    }
-
-    .status-msg {
+      padding: 20px;
+      z-index: 10;
       text-align: center;
-      font-size: 0.95rem;
-      font-weight: 600;
-      min-height: 24px;
-      color: #ffffff;
     }
 
-    .status-msg.win { color: #4ade80; text-shadow: 0 0 8px rgba(74, 222, 128, 0.5); }
-    .status-msg.lose { color: #f87171; text-shadow: 0 0 8px rgba(248, 113, 113, 0.5); }
-    .status-msg.draw { color: var(--gold); }
+    .game-overlay.active {
+      display: flex;
+    }
 
-    /* Botões de Ação */
-    .game-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    .game-overlay h2 {
+      font-size: 1.6rem;
+      color: var(--gold);
+      margin-bottom: 6px;
+      text-shadow: 0 0 12px rgba(255, 209, 102, 0.5);
+    }
+
+    .game-overlay p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 18px;
+    }
+
+    .upgrade-cards {
+      display: flex;
+      flex-direction: column;
       gap: 10px;
+      width: 100%;
     }
 
-    .action-btn {
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 0.9rem;
+    .upgrade-card {
+      background: #180b26;
+      border: 1px solid var(--purple-accent);
+      border-radius: 12px;
+      padding: 12px 16px;
+      text-align: left;
       cursor: pointer;
       transition: all 0.2s;
     }
 
-    .btn-hit {
-      background: var(--magenta);
-      color: #ffffff;
+    .upgrade-card:hover {
+      border-color: var(--magenta);
+      background: #27113e;
+      transform: translateY(-2px);
       box-shadow: 0 4px 15px var(--magenta-glow);
     }
 
-    .btn-hit:hover:not(:disabled) {
-      filter: brightness(1.15);
-      transform: translateY(-2px);
+    .upgrade-card h4 {
+      color: #fff;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
     }
 
-    .btn-stand {
-      background: #2b1a3d;
-      color: #ffffff;
-      border: 1px solid var(--card-border);
+    .upgrade-card p {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin: 0;
     }
 
-    .btn-stand:hover:not(:disabled) {
-      border-color: var(--purple-accent);
-      background: #38224f;
-    }
-
-    .btn-new {
-      grid-column: span 2;
+    .restart-btn {
+      margin-top: 14px;
+      padding: 12px 24px;
       background: linear-gradient(90deg, var(--purple-accent), var(--magenta));
-      color: #ffffff;
-      box-shadow: 0 4px 15px rgba(157, 78, 221, 0.4);
-    }
-
-    .btn-new:hover {
-      filter: brightness(1.15);
-    }
-
-    .action-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      transform: none !important;
-      box-shadow: none !important;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 15px var(--magenta-glow);
     }
 
     .footer {
@@ -378,7 +329,6 @@
 
   <div class="profile">
     <div class="avatar-wrapper">
-      <!-- Se você subiu sua imagem como avatar.png, ela carrega aqui automaticamente -->
       <img src="avatar.png" onerror="this.src='https://github.com/identicons/gambit.png'" alt="Avatar Lyz" id="user-avatar" />
     </div>
     <h1>Lyz <span class="suit">♦</span></h1>
@@ -386,70 +336,52 @@
   </div>
 
   <div class="links-container">
-    <!-- Minigame do Gambit (Destaque) -->
     <div class="card-link game-btn" id="open-game-btn">
-      <span>🃏 Gambit's 21 (Blackjack)</span>
-      <span class="card-corner">♠ A</span>
+      <span>⚔️ Sobreviventes da Cripta (Survivors)</span>
+      <span class="card-corner">LVL 1</span>
     </div>
 
-    <!-- Roblox -->
     <a href="https://www.roblox.com/pt/users/1766709036/profile" target="_blank" class="card-link">
       <span>🎮 Roblox Profile</span>
+      <span class="card-corner">♠ A</span>
+    </a>
+
+    <a href="https://discord.com/users/luiszzz_z0" target="_blank" class="card-link">
+      <span>💬 Discord (luiszzz_z0)</span>
       <span class="card-corner">♥ K</span>
     </a>
 
-    <!-- Discord -->
-    <a href="https://discord.com/users/luiszzz_z0" target="_blank" class="card-link">
-      <span>💬 Discord (luiszzz_z0)</span>
-      <span class="card-corner">♦ Q</span>
-    </a>
-
-    <!-- Email -->
     <a href="mailto:lyz@lyz.wiki.br" class="card-link">
       <span>✉️ Contato por E-mail</span>
       <span class="card-corner">♣ J</span>
     </a>
   </div>
 
-  <!-- Modal do Minigame Blackjack -->
+  <!-- Modal do Jogo -->
   <div class="game-modal" id="game-modal">
-    <div class="game-board">
-      <div class="modal-header">
-        <h2>♠ Gambit's 21</h2>
+    <div class="game-wrapper">
+      <div class="game-header">
+        <div class="stats">
+          <span>❤️ <span id="hp-text">100/100</span></span>
+          <span>⚡ Nvl <span id="lvl-text">1</span></span>
+          <span>💀 <span id="kill-text">0</span></span>
+          <span>⏱️ <span id="time-text">00:00</span></span>
+        </div>
         <button class="close-btn" id="close-game-btn">&times;</button>
       </div>
 
-      <div class="stats-bar">
-        <span>Vitórias: <span id="stat-wins">0</span></span>
-        <span class="chips">Fichas: <span id="stat-chips">100</span> ♦</span>
+      <div class="xp-bar-container">
+        <div class="xp-bar-fill" id="xp-fill"></div>
       </div>
 
-      <!-- Mesa Dealer -->
-      <div>
-        <div class="area-label">
-          <span>Banca (Dealer)</span>
-          <span id="dealer-score">--</span>
-        </div>
-        <div class="cards-row" id="dealer-cards"></div>
-      </div>
+      <canvas id="gameCanvas" width="480" height="420"></canvas>
 
-      <!-- Mesa Jogador -->
-      <div>
-        <div class="area-label">
-          <span>Sua Mão</span>
-          <span id="player-score">0</span>
-        </div>
-        <div class="cards-row" id="player-cards"></div>
-      </div>
-
-      <!-- Mensagem -->
-      <div class="status-msg" id="status-msg">Faça seu lance e desafie a banca!</div>
-
-      <!-- Ações -->
-      <div class="game-actions">
-        <button class="action-btn btn-hit" id="btn-hit">Pedir Carta (+)</button>
-        <button class="action-btn btn-stand" id="btn-stand">Parar (Stand)</button>
-        <button class="action-btn btn-new" id="btn-new" style="display: none;">Nova Rodada ♠</button>
+      <!-- Overlay de Level Up / Game Over -->
+      <div class="game-overlay" id="game-overlay">
+        <h2 id="overlay-title">LEVEL UP!</h2>
+        <p id="overlay-desc">Escolha uma dádiva para aprimorar seu poder:</p>
+        <div class="upgrade-cards" id="upgrade-cards"></div>
+        <button class="restart-btn" id="restart-btn" style="display: none;">Jogar Novamente</button>
       </div>
     </div>
   </div>
@@ -459,191 +391,440 @@
   </div>
 
   <script>
-    // Lógica do Blackjack 21 do Gambit
-    const suits = ['♠', '♥', '♦', '♣'];
-    const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-
-    let deck = [];
-    let playerCards = [];
-    let dealerCards = [];
-    let gameOver = false;
-    let chips = 100;
-    let wins = 0;
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
 
     const modal = document.getElementById('game-modal');
     const openBtn = document.getElementById('open-game-btn');
     const closeBtn = document.getElementById('close-game-btn');
 
-    const playerCardsEl = document.getElementById('player-cards');
-    const dealerCardsEl = document.getElementById('dealer-cards');
-    const playerScoreEl = document.getElementById('player-score');
-    const dealerScoreEl = document.getElementById('dealer-score');
-    const statusMsg = document.getElementById('status-msg');
+    const hpText = document.getElementById('hp-text');
+    const lvlText = document.getElementById('lvl-text');
+    const killText = document.getElementById('kill-text');
+    const timeText = document.getElementById('time-text');
+    const xpFill = document.getElementById('xp-fill');
 
-    const btnHit = document.getElementById('btn-hit');
-    const btnStand = document.getElementById('btn-stand');
-    const btnNew = document.getElementById('btn-new');
+    const overlay = document.getElementById('game-overlay');
+    const overlayTitle = document.getElementById('overlay-title');
+    const overlayDesc = document.getElementById('overlay-desc');
+    const upgradeCards = document.getElementById('upgrade-cards');
+    const restartBtn = document.getElementById('restart-btn');
 
-    const statChips = document.getElementById('stat-chips');
-    const statWins = document.getElementById('stat-wins');
+    // Estado do Jogo
+    let running = false;
+    let paused = false;
+    let keys = {};
+    let touchMove = { active: false, x: 0, y: 0 };
+    let gameTimer = 0;
+    let timerInterval = null;
+    let kills = 0;
 
-    // Abrir e fechar modal
+    // Jogador e Atributos
+    let player = {
+      x: 240, y: 210,
+      r: 10,
+      speed: 2.6,
+      maxHp: 100,
+      hp: 100,
+      lvl: 1,
+      xp: 0,
+      nextXp: 15,
+      fireRate: 45, // frames entre disparos
+      cooldown: 0,
+      bulletDmg: 20,
+      bulletCount: 1,
+      magnetRange: 75
+    };
+
+    let bullets = [];
+    let enemies = [];
+    let gems = [];
+    let particles = [];
+    let enemySpawnTimer = 0;
+
+    // Upgrades Disponíveis
+    const UPGRADES_POOL = [
+      { id: 'dmg', name: 'Lâminas Rúnicas', desc: '+35% Dano por disparo', apply: () => player.bulletDmg = Math.round(player.bulletDmg * 1.35) },
+      { id: 'rate', name: 'Frenesi Sombrio', desc: '+25% Velocidade de ataque', apply: () => player.fireRate = Math.max(12, Math.round(player.fireRate * 0.75)) },
+      { id: 'multi', name: 'Cisão de Projéteis', desc: '+1 Projétil adicional por disparo', apply: () => player.bulletCount++ },
+      { id: 'speed', name: 'Passos Fantasmagóricos', desc: '+18% Velocidade de movimento', apply: () => player.speed *= 1.18 },
+      { id: 'maxhp', name: 'Vigor Imortal', desc: '+30 Vida Máxima & cura total', apply: () => { player.maxHp += 30; player.hp = player.maxHp; } },
+      { id: 'magnet', name: 'Vórtice Espiritual', desc: '+50% Raio de atração de XP', apply: () => player.magnetRange *= 1.5 }
+    ];
+
+    // Inputs
+    window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
+    window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
+
+    // Controles de Toque para Mobile
+    canvas.addEventListener('touchstart', handleTouch);
+    canvas.addEventListener('touchmove', handleTouch);
+    canvas.addEventListener('touchend', () => touchMove.active = false);
+
+    function handleTouch(e) {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      const cx = touch.clientX - rect.left;
+      const cy = touch.clientY - rect.top;
+      touchMove.active = true;
+      touchMove.x = (cx - player.x);
+      touchMove.y = (cy - player.y);
+    }
+
     openBtn.addEventListener('click', () => {
       modal.classList.add('active');
-      if (deck.length === 0) startNewGame();
+      initGame();
     });
 
-    closeBtn.addEventListener('click', () => modal.classList.remove('active'));
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.classList.remove('active');
+    closeBtn.addEventListener('click', () => {
+      modal.classList.remove('active');
+      running = false;
+      clearInterval(timerInterval);
     });
 
-    function createDeck() {
-      deck = [];
-      for (let s of suits) {
-        for (let v of values) {
-          deck.push({ suit: s, value: v });
+    restartBtn.addEventListener('click', () => {
+      overlay.classList.remove('active');
+      initGame();
+    });
+
+    function initGame() {
+      player.x = canvas.width / 2;
+      player.y = canvas.height / 2;
+      player.speed = 2.6;
+      player.maxHp = 100;
+      player.hp = 100;
+      player.lvl = 1;
+      player.xp = 0;
+      player.nextXp = 15;
+      player.fireRate = 45;
+      player.cooldown = 0;
+      player.bulletDmg = 20;
+      player.bulletCount = 1;
+      player.magnetRange = 75;
+
+      bullets = [];
+      enemies = [];
+      gems = [];
+      particles = [];
+      kills = 0;
+      gameTimer = 0;
+      paused = false;
+      running = true;
+
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (!paused && running) {
+          gameTimer++;
+          const m = String(Math.floor(gameTimer / 60)).padStart(2, '0');
+          const s = String(gameTimer % 60).padStart(2, '0');
+          timeText.innerText = `${m}:${s}`;
+        }
+      }, 1000);
+
+      updateStatsUI();
+      requestAnimationFrame(gameLoop);
+    }
+
+    function spawnEnemy() {
+      const edge = Math.floor(Math.random() * 4);
+      let x, y;
+      if (edge === 0) { x = Math.random() * canvas.width; y = -15; }
+      else if (edge === 1) { x = canvas.width + 15; y = Math.random() * canvas.height; }
+      else if (edge === 2) { x = Math.random() * canvas.width; y = canvas.height + 15; }
+      else { x = -15; y = Math.random() * canvas.height; }
+
+      // Escala de dificuldade pelo tempo
+      const elite = Math.random() < Math.min(0.25, gameTimer * 0.002);
+      enemies.push({
+        x, y,
+        r: elite ? 14 : 9,
+        hp: elite ? 80 + gameTimer : 25 + (gameTimer * 0.4),
+        speed: elite ? 1.3 : 1.7 + Math.random() * 0.4,
+        color: elite ? '#ff2a85' : '#8338ec',
+        elite
+      });
+    }
+
+    function autoAttack() {
+      if (enemies.length === 0) return;
+
+      // Acha os inimigos mais próximos
+      let sorted = [...enemies].sort((a, b) => {
+        return Math.hypot(a.x - player.x, a.y - player.y) - Math.hypot(b.x - player.x, b.y - player.y);
+      });
+
+      const targets = sorted.slice(0, player.bulletCount);
+      targets.forEach(target => {
+        const angle = Math.atan2(target.y - player.y, target.x - player.x);
+        bullets.push({
+          x: player.x,
+          y: player.y,
+          vx: Math.cos(angle) * 6.5,
+          vy: Math.sin(angle) * 6.5,
+          dmg: player.bulletDmg,
+          r: 4,
+          life: 80
+        });
+      });
+    }
+
+    function addParticles(x, y, color) {
+      for (let i = 0; i < 6; i++) {
+        particles.push({
+          x, y,
+          vx: (Math.random() - 0.5) * 4,
+          vy: (Math.random() - 0.5) * 4,
+          life: 18,
+          color
+        });
+      }
+    }
+
+    function updateStatsUI() {
+      hpText.innerText = `${Math.max(0, Math.round(player.hp))}/${player.maxHp}`;
+      lvlText.innerText = player.lvl;
+      killText.innerText = kills;
+      xpFill.style.width = `${Math.min(100, (player.xp / player.nextXp) * 100)}%`;
+    }
+
+    function triggerLevelUp() {
+      paused = true;
+      overlay.classList.add('active');
+      restartBtn.style.display = 'none';
+      overlayTitle.innerText = `LEVEL UP! (Nvl ${player.lvl})`;
+      overlayDesc.innerText = 'Selecione uma relíquia para absorver poder:';
+      upgradeCards.innerHTML = '';
+
+      // Escolhe 3 opções aleatórias
+      const shuffled = [...UPGRADES_POOL].sort(() => 0.5 - Math.random()).slice(0, 3);
+      shuffled.forEach(up => {
+        const div = document.createElement('div');
+        div.className = 'upgrade-card';
+        div.innerHTML = `<h4><span>${up.name}</span><span style="color:var(--magenta);">★</span></h4><p>${up.desc}</p>`;
+        div.onclick = () => {
+          up.apply();
+          overlay.classList.remove('active');
+          paused = false;
+          updateStatsUI();
+          requestAnimationFrame(gameLoop);
+        };
+        upgradeCards.appendChild(div);
+      });
+    }
+
+    function triggerGameOver() {
+      running = false;
+      clearInterval(timerInterval);
+      overlay.classList.add('active');
+      overlayTitle.innerText = 'VOCÊ MORREU';
+      overlayTitle.style.color = '#ff4d6d';
+      overlayDesc.innerText = `Você sobreviveu por ${timeText.innerText} e derrotou ${kills} criaturas da escuridão.`;
+      upgradeCards.innerHTML = '';
+      restartBtn.style.display = 'block';
+    }
+
+    function update() {
+      if (!running || paused) return;
+
+      // Movimento do Jogador
+      let dx = 0;
+      let dy = 0;
+
+      if (keys['w'] || keys['arrowup']) dy -= 1;
+      if (keys['s'] || keys['arrowdown']) dy += 1;
+      if (keys['a'] || keys['arrowleft']) dx -= 1;
+      if (keys['d'] || keys['arrowright']) dx += 1;
+
+      if (touchMove.active) {
+        const dist = Math.hypot(touchMove.x, touchMove.y);
+        if (dist > 15) {
+          dx = touchMove.x / dist;
+          dy = touchMove.y / dist;
         }
       }
-      // Embaralhar
-      for (let i = deck.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [deck[i], deck[j]] = [deck[j], deck[i]];
+
+      if (dx !== 0 && dy !== 0) {
+        dx *= 0.7071;
+        dy *= 0.7071;
       }
-    }
 
-    function getCardWeight(val) {
-      if (['J', 'Q', 'K'].includes(val)) return 10;
-      if (val === 'A') return 11;
-      return parseInt(val);
-    }
+      player.x = Math.max(player.r, Math.min(canvas.width - player.r, player.x + dx * player.speed));
+      player.y = Math.max(player.r, Math.min(canvas.height - player.r, player.y + dy * player.speed));
 
-    function calculateHand(hand) {
-      let sum = 0;
-      let aces = 0;
-      for (let c of hand) {
-        sum += getCardWeight(c.value);
-        if (c.value === 'A') aces++;
+      // Disparo Automático
+      player.cooldown++;
+      if (player.cooldown >= player.fireRate) {
+        autoAttack();
+        player.cooldown = 0;
       }
-      while (sum > 21 && aces > 0) {
-        sum -= 10;
-        aces--;
+
+      // Projéteis
+      for (let i = bullets.length - 1; i >= 0; i--) {
+        const b = bullets[i];
+        b.x += b.vx;
+        b.y += b.vy;
+        b.life--;
+
+        // Colisão Bala vs Inimigo
+        for (let j = enemies.length - 1; j >= 0; j--) {
+          const e = enemies[j];
+          if (Math.hypot(b.x - e.x, b.y - e.y) < b.r + e.r) {
+            e.hp -= b.dmg;
+            addParticles(b.x, b.y, '#00f0ff');
+            b.life = 0;
+
+            if (e.hp <= 0) {
+              kills++;
+              gems.push({ x: e.x, y: e.y, xp: e.elite ? 12 : 4 });
+              addParticles(e.x, e.y, e.color);
+              enemies.splice(j, 1);
+            }
+            break;
+          }
+        }
+
+        if (b.life <= 0) bullets.splice(i, 1);
       }
-      return sum;
-    }
 
-    function renderCard(card, isHidden = false) {
-      const el = document.createElement('div');
-      el.className = 'play-card';
-      if (isHidden) {
-        el.className += ' hidden';
-        el.innerText = '♦';
-        return el;
+      // Inimigos
+      enemySpawnTimer++;
+      const spawnInterval = Math.max(20, 60 - Math.floor(gameTimer * 0.4));
+      if (enemySpawnTimer >= spawnInterval) {
+        spawnEnemy();
+        enemySpawnTimer = 0;
       }
-      if (card.suit === '♥' || card.suit === '♦') el.className += ' red';
-      el.innerHTML = `<span>${card.value}</span><span style="align-self:flex-end;">${card.suit}</span>`;
-      return el;
-    }
 
-    function updateUI(revealDealer = false) {
-      playerCardsEl.innerHTML = '';
-      dealerCardsEl.innerHTML = '';
+      for (let i = enemies.length - 1; i >= 0; i--) {
+        const e = enemies[i];
+        const angle = Math.atan2(player.y - e.y, player.x - e.x);
+        e.x += Math.cos(angle) * e.speed;
+        e.y += Math.sin(angle) * e.speed;
 
-      playerCards.forEach(c => playerCardsEl.appendChild(renderCard(c)));
-
-      if (dealerCards.length > 0) {
-        if (!revealDealer && !gameOver) {
-          dealerCardsEl.appendChild(renderCard(dealerCards[0]));
-          dealerCardsEl.appendChild(renderCard(dealerCards[1], true));
-          dealerScoreEl.innerText = getCardWeight(dealerCards[0].value) === 11 ? '11/1' : getCardWeight(dealerCards[0].value);
-        } else {
-          dealerCards.forEach(c => dealerCardsEl.appendChild(renderCard(c)));
-          dealerScoreEl.innerText = calculateHand(dealerCards);
+        // Dano no Jogador
+        if (Math.hypot(player.x - e.x, player.y - e.y) < player.r + e.r) {
+          player.hp -= 0.35;
+          if (player.hp <= 0) {
+            triggerGameOver();
+            return;
+          }
         }
       }
 
-      playerScoreEl.innerText = calculateHand(playerCards);
-      statChips.innerText = chips;
-      statWins.innerText = wins;
+      // Gemas de XP & Magnetismo
+      for (let i = gems.length - 1; i >= 0; i--) {
+        const g = gems[i];
+        const dist = Math.hypot(player.x - g.x, player.y - g.y);
+
+        if (dist < player.magnetRange) {
+          const angle = Math.atan2(player.y - g.y, player.x - g.x);
+          g.x += Math.cos(angle) * 5.5;
+          g.y += Math.sin(angle) * 5.5;
+        }
+
+        if (dist < player.r + 8) {
+          player.xp += g.xp;
+          gems.splice(i, 1);
+
+          if (player.xp >= player.nextXp) {
+            player.xp -= player.nextXp;
+            player.nextXp = Math.round(player.nextXp * 1.45);
+            player.lvl++;
+            updateStatsUI();
+            triggerLevelUp();
+            return;
+          }
+        }
+      }
+
+      // Partículas
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
+        if (p.life <= 0) particles.splice(i, 1);
+      }
+
+      updateStatsUI();
     }
 
-    function startNewGame() {
-      if (chips < 10) chips = 50;
-      chips -= 10;
-      createDeck();
-      playerCards = [deck.pop(), deck.pop()];
-      dealerCards = [deck.pop(), deck.pop()];
-      gameOver = false;
+    function draw() {
+      // Fundo em Grid Retro
+      ctx.fillStyle = '#08030d';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      statusMsg.className = 'status-msg';
-      statusMsg.innerText = 'Sua vez! Pedir mais cartas ou Parar?';
-      btnHit.disabled = false;
-      btnStand.disabled = false;
-      btnNew.style.display = 'none';
-
-      updateUI();
-
-      if (calculateHand(playerCards) === 21) {
-        endGame('Blackjack! 21 na veia!', 'win');
+      ctx.strokeStyle = '#150921';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < canvas.width; x += 30) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
       }
+      for (let y = 0; y < canvas.height; y += 30) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+      }
+
+      // Gemas de XP
+      gems.forEach(g => {
+        ctx.fillStyle = '#00f0ff';
+        ctx.shadowColor = '#00f0ff';
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        ctx.arc(g.x, g.y, 4, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Partículas
+      ctx.shadowBlur = 0;
+      particles.forEach(p => {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 2.5, 2.5);
+      });
+
+      // Projéteis
+      bullets.forEach(b => {
+        ctx.fillStyle = '#ff2a85';
+        ctx.shadowColor = '#ff2a85';
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Inimigos
+      enemies.forEach(e => {
+        ctx.fillStyle = e.color;
+        ctx.shadowColor = e.color;
+        ctx.shadowBlur = 6;
+        ctx.beginPath();
+        ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Jogador
+      ctx.shadowColor = '#ffd166';
+      ctx.shadowBlur = 14;
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(player.x, player.y, player.r, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Borda de vida do Jogador
+      ctx.shadowBlur = 0;
+      ctx.strokeStyle = '#ff2a85';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(player.x, player.y, player.r + 3, 0, (Math.PI * 2) * (player.hp / player.maxHp));
+      ctx.stroke();
     }
 
-    function endGame(msg, type) {
-      gameOver = true;
-      btnHit.disabled = true;
-      btnStand.disabled = true;
-      btnNew.style.display = 'block';
-
-      if (type === 'win') {
-        chips += 25;
-        wins++;
-      } else if (type === 'draw') {
-        chips += 10;
-      }
-
-      updateUI(true);
-      statusMsg.className = `status-msg ${type}`;
-      statusMsg.innerText = msg;
-    }
-
-    btnHit.addEventListener('click', () => {
-      if (gameOver) return;
-      playerCards.push(deck.pop());
-      updateUI();
-      const score = calculateHand(playerCards);
-      if (score > 21) {
-        endGame('Estourou! Você passou de 21.', 'lose');
-      } else if (score === 21) {
-        stand();
-      }
-    });
-
-    function stand() {
-      if (gameOver) return;
-      btnHit.disabled = true;
-      btnStand.disabled = true;
-
-      // Dealer joga (compra até somar 17 ou mais)
-      while (calculateHand(dealerCards) < 17) {
-        dealerCards.push(deck.pop());
-      }
-
-      const pScore = calculateHand(playerCards);
-      const dScore = calculateHand(dealerCards);
-
-      if (dScore > 21) {
-        endGame('A banca estourou! Você venceu!', 'win');
-      } else if (pScore > dScore) {
-        endGame(`Você venceu! (${pScore} vs ${dScore})`, 'win');
-      } else if (pScore < dScore) {
-        endGame(`A banca venceu! (${dScore} vs ${pScore})`, 'lose');
-      } else {
-        endGame('Empate! Fichas devolvidas.', 'draw');
+    function gameLoop() {
+      if (!running) return;
+      update();
+      draw();
+      if (!paused && running) {
+        requestAnimationFrame(gameLoop);
       }
     }
-
-    btnStand.addEventListener('click', stand);
-    btnNew.addEventListener('click', startNewGame);
   </script>
 
 </body>
