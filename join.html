@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lyz | Solicitar E-mail ♠</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>♠</text></svg>">
+  <style>
+    :root {
+      --bg: #0b0710;
+      --card: #150d1e;
+      --border: #2a1b3d;
+      --neon-pink: #ff2a85;
+      --neon-cyan: #00f2fe;
+      --text: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      margin-bottom: 24px;
+    }
+
+    .input-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      color: #cbd5e1;
+    }
+
+    .email-box {
+      display: flex;
+      align-items: center;
+      background: #0d0714;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .email-box input {
+      border: none;
+      background: transparent;
+      padding: 12px;
+      color: #fff;
+      outline: none;
+      width: 100%;
+      font-size: 0.95rem;
+    }
+
+    .email-box span {
+      padding-right: 12px;
+      color: var(--neon-cyan);
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    input.full {
+      width: 100%;
+      padding: 12px;
+      background: #0d0714;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: #fff;
+      outline: none;
+      font-size: 0.95rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: var(--neon-pink);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(255, 42, 133, 0.4);
+      transition: opacity 0.2s;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    #status {
+      margin-top: 16px;
+      font-size: 0.9rem;
+      text-align: center;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Criar Acesso <span>♠</span></h1>
+    <p>Escolha o seu endereço exclusivo @lyz.wiki.br para conectar ao hub.</p>
+
+    <form id="emailForm">
+      <div class="input-group">
+        <label>E-mail desejado</label>
+        <div class="email-box">
+          <input type="text" id="alias" placeholder="seu-nome" required pattern="[a-zA-Z0-9._-]+" />
+          <span>@lyz.wiki.br</span>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Seu Gmail pessoal (para receber os e-mails)</label>
+        <input type="email" id="destination" class="full" placeholder="exemplo@gmail.com" required />
+      </div>
+
+      <button type="submit" id="btnSubmit">Reivindicar Endereço</button>
+      <div id="status"></div>
+    </form>
+  </div>
+
+  <script>
+    const WORKER_URL = "https://criar-email-lyz.otavioluiz200006.workers.dev";
+
+    const form = document.getElementById("emailForm");
+    const btn = document.getElementById("btnSubmit");
+    const status = document.getElementById("status");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      btn.disabled = true;
+      status.style.color = "#00f2fe";
+      status.innerText = "Criando seu e-mail no domínio...";
+
+      const alias = document.getElementById("alias").value.trim().toLowerCase();
+      const destination = document.getElementById("destination").value.trim().toLowerCase();
+
+      try {
+        const res = await fetch(WORKER_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ alias, destination })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          status.style.color = "#4ade80";
+          status.innerHTML = `<strong>Pronto!</strong> E-mail <u>${alias}@lyz.wiki.br</u> configurado.<br>Acesse seu Gmail (<strong>${destination}</strong>) e clique no link de confirmação da Cloudflare.`;
+          form.reset();
+        } else {
+          status.style.color = "#f87171";
+          status.innerText = data.error || "Erro ao registrar e-mail.";
+        }
+      } catch (err) {
+        status.style.color = "#f87171";
+        status.innerText = "Falha de conexão com o servidor.";
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
