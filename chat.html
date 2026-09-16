@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lyz | Chat Secreto ♠</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #0b0710;
+      --panel: #130a1c;
+      --card: #1c102b;
+      --border: #2f1947;
+      --neon-pink: #ff2a85;
+      --neon-cyan: #00f2fe;
+      --text: #e2e8f0;
+      --text-muted: #8b7ca3;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* Modal de Login */
+    #authModal {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 7, 16, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .auth-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 32px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 0 25px rgba(255, 42, 133, 0.15);
+    }
+
+    .auth-box h2 {
+      margin-bottom: 8px;
+      color: #fff;
+    }
+
+    .auth-box p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 12px;
+      background: #0b0710;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: #fff;
+      margin-bottom: 12px;
+      outline: none;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+
+    .btn-pink { background: var(--neon-pink); color: #fff; box-shadow: 0 0 10px rgba(255, 42, 133, 0.3); }
+    .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+
+    /* Layout do Chat */
+    .sidebar {
+      width: 280px;
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 20px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .user-tag {
+      font-size: 0.85rem;
+      color: var(--neon-cyan);
+      font-weight: bold;
+    }
+
+    .search-box {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: #fff;
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .member-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 16px;
+    }
+
+    .member-item {
+      padding: 8px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .member-item:hover {
+      background: var(--card);
+      color: #fff;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-header {
+      height: 60px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      font-weight: bold;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .message {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .msg-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .msg-author {
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: var(--neon-cyan);
+    }
+
+    .msg-time {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .msg-content {
+      font-size: 0.95rem;
+      line-height: 1.4;
+      color: #cbd5e1;
+    }
+
+    .chat-input-bar {
+      padding: 16px 24px;
+      background: var(--panel);
+      border-top: 1px solid var(--border);
+    }
+
+    .chat-input {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Modal Auth -->
+  <div id="authModal">
+    <div class="auth-box">
+      <h2>Entrar no Lyz ♠</h2>
+      <p>Apenas credenciais @lyz.wiki.br</p>
+      <input type="email" id="authEmail" class="input-field" placeholder="voce@lyz.wiki.br" />
+      <input type="password" id="authPass" class="input-field" placeholder="Sua senha secreta" />
+      <button class="btn btn-pink" onclick="handleLogin()">Acessar</button>
+      <button class="btn btn-ghost" onclick="handleRegister()">Criar Nova Senha</button>
+      <div id="authError" style="color: #f87171; font-size: 0.8rem; margin-top: 8px;"></div>
+    </div>
+  </div>
+
+  <!-- Interface do Chat -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <span style="font-weight: bold;">Lyz Network ♠</span>
+      <span id="currentHandle" class="user-tag">offline</span>
+    </div>
+    <div class="search-box">
+      <input type="text" id="searchUser" class="search-input" placeholder="Buscar @tag ou nick..." oninput="filtrarUsuarios()" />
+    </div>
+    <div class="member-list" id="memberList">
+      <!-- Membros carregados aqui -->
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="chat-header"># canal-geral</div>
+    <div class="chat-messages" id="messagesContainer"></div>
+    <div class="chat-input-bar">
+      <input type="text" id="msgInput" class="chat-input" placeholder="Conversar em #canal-geral... (aperte Enter)" onkeydown="checkKey(event)" />
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://xwhmuhzheladxpkllmtk.supabase.co";
+    // COLE SUA CHAVE PUBLISHABLE ABAIXO:
+    const SUPABASE_KEY = "sb_publishable_LfnzWxDDUF5-8taCtYAwdA_gkgdZMbu";
+
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    let currentUser = null;
+    let profilesList = [];
+
+    async function checkSession() {
+      const { data: { session } } = await client.auth.getSession();
+      if (session) {
+        currentUser = session.user;
+        document.getElementById("authModal").style.display = "none";
+        carregarPerfil();
+        iniciarRealtime();
+      }
+    }
+
+    async function handleRegister() {
+      const email = document.getElementById("authEmail").value.trim().toLowerCase();
+      const password = document.getElementById("authPass").value;
+      const errorBox = document.getElementById("authError");
+
+      if (!email.endsWith("@lyz.wiki.br")) {
+        errorBox.innerText = "Acesso recusado. Requer e-mail @lyz.wiki.br";
+        return;
+      }
+
+      const { data, error } = await client.auth.signUp({ email, password });
+      if (error) {
+        errorBox.innerText = error.message;
+      } else {
+        errorBox.style.color = "#4ade80";
+        errorBox.innerText = "Registrado! Faça login agora.";
+      }
+    }
+
+    async function handleLogin() {
+      const email = document.getElementById("authEmail").value.trim().toLowerCase();
+      const password = document.getElementById("authPass").value;
+      const errorBox = document.getElementById("authError");
+
+      const { data, error } = await client.auth.signInWithPassword({ email, password });
+      if (error) {
+        errorBox.innerText = error.message;
+      } else {
+        currentUser = data.user;
+        document.getElementById("authModal").style.display = "none";
+        carregarPerfil();
+        iniciarRealtime();
+      }
+    }
+
+    async function carregarPerfil() {
+      const { data } = await client.from("profiles").select("*").eq("id", currentUser.id).single();
+      if (data) {
+        document.getElementById("currentHandle").innerText = data.handle;
+      }
+      carregarMembros();
+      carregarMensagens();
+    }
+
+    async function carregarMembros() {
+      const { data } = await client.from("profiles").select("*");
+      profilesList = data || [];
+      renderMembros(profilesList);
+    }
+
+    function renderMembros(lista) {
+      const container = document.getElementById("memberList");
+      container.innerHTML = "";
+      lista.forEach(p => {
+        const item = document.createElement("div");
+        item.className = "member-item";
+        item.innerHTML = `<span>♠</span> ${p.handle}`;
+        container.appendChild(item);
+      });
+    }
+
+    function filtrarUsuarios() {
+      const q = document.getElementById("searchUser").value.toLowerCase();
+      const filtrados = profilesList.filter(p => p.handle.toLowerCase().includes(q));
+      renderMembros(filtrados);
+    }
+
+    async function carregarMensagens() {
+      const { data } = await client.from("messages").select("*, profiles(handle)").order("created_at", { ascending: true }).limit(50);
+      const container = document.getElementById("messagesContainer");
+      container.innerHTML = "";
+      if (data) {
+        data.forEach(appendMessage);
+      }
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function appendMessage(msg) {
+      const container = document.getElementById("messagesContainer");
+      const div = document.createElement("div");
+      div.className = "message";
+      const time = new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const author = msg.profiles ? msg.profiles.handle : "Desconhecido";
+
+      div.innerHTML = `
+        <div class="msg-header">
+          <span class="msg-author">${author}</span>
+          <span class="msg-time">${time}</span>
+        </div>
+        <div class="msg-content">${msg.content}</div>
+      `;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function checkKey(e) {
+      if (e.key === "Enter") enviarMensagem();
+    }
+
+    async function enviarMensagem() {
+      const input = document.getElementById("msgInput");
+      const content = input.value.trim();
+      if (!content) return;
+      input.value = "";
+
+      await client.from("messages").insert([{ sender_id: currentUser.id, content }]);
+    }
+
+    function iniciarRealtime() {
+      client.channel("realtime-messages")
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, async (payload) => {
+          const { data: profile } = await client.from("profiles").select("handle").eq("id", payload.new.sender_id).single();
+          appendMessage({ ...payload.new, profiles: profile });
+        })
+        .subscribe();
+    }
+
+    checkSession();
+  </script>
+</body>
+</html>
